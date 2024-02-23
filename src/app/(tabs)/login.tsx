@@ -1,16 +1,14 @@
+import {View, StyleSheet, Text, Image} from 'react-native'
 import { theme } from '@/theme/index'
-import { StyleSheet, Text } from 'react-native'
 import Page from '../../components/page'
 
 
-export default function Home(){
-    return (
+export default function Login(){
+     return (
         <Page>
-           
-            <Text style={styles.text}>Home</Text>
-
+            <Text style={styles.text}>Login</Text>
         </Page>
-      
+     
     )
 }
 

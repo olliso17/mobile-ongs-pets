@@ -1,30 +1,48 @@
-import { Slot } from "expo-router";
-import { StatusBar, StyleSheet } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useFonts, IrishGrover_400Regular} from '@expo-google-fonts/irish-grover'
-import * as SplashScreen from 'expo-splash-screen'
+import { Foundation, Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { theme } from "../../theme";
 
-SplashScreen.preventAutoHideAsync()
+export default function TabLayout() {
+    return(
+        <Tabs screenOptions={{
+            headerShown:false,
+            tabBarShowLabel:false,
+            tabBarActiveTintColor:theme.colors.white,
+            tabBarInactiveTintColor:theme.colors.gray[600],
+            tabBarStyle:{
+                borderColor:theme.colors.black
+            }
+        }}>
+            <Tabs.Screen 
+                name="index"
+                options={{
+                    tabBarIcon: ({size, color})=><Foundation name="home" size={size} color={color}/>
+                }}/>
 
-export default function Layout() {
-   const [fontsLoaded]= useFonts({
-        IrishGrover_400Regular
-    });
+            <Tabs.Screen 
+            name="login"
+             options={{
+                    tabBarIcon: ({size, color})=><Ionicons name="person" size={size} color={color}/>
+                }}/>
 
-    if(!fontsLoaded){
-        SplashScreen.hideAsync()
-    }
+            <Tabs.Screen
+             name="add_user"
+              options={{
+                    tabBarIcon: ({size, color})=><Foundation name="home" size={size} color={color}/>
+                }}/>
 
-    return (
-        <GestureHandlerRootView style={styles.container}>
-            <StatusBar barStyle="light-content"/>
-           {fontsLoaded && <Slot/>}
-        </GestureHandlerRootView>
+            {/* <Tabs.Screen
+             name="ongs"
+              options={{
+                    tabBarIcon: ({size, color})=><Foundation name="home" size={size} color={color}/>
+                }}/>
+                
+            <Tabs.Screen
+             name="pets"
+              options={{
+                    tabBarIcon: ({size, color})=><Foundation name="home" size={size} color={color}/>
+                }}/> */}
+            {/* <Tabs.Screen name=""/> */}
+        </Tabs>
     )
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex:1
-    }
-})
