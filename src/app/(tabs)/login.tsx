@@ -1,12 +1,13 @@
 import {View, StyleSheet, Text, Image} from 'react-native'
 import { theme } from '@/theme/index'
 import Page from '../../components/page'
+import LoginForm from '../../components/login_component'
 
 
 export default function Login(){
      return (
         <Page>
-            <Text style={styles.text}>Login</Text>
+            <LoginForm/>
         </Page>
      
     )

@@ -1,12 +1,13 @@
 import { theme } from '@/theme/index'
 import { StyleSheet, Text, View } from 'react-native'
 import Page from '../../components/page'
+import AddUserForm from '../../components/add_user_component'
 
 
 export default function AddUser(){
     return (
         <Page>
-            <Text style={styles.text}>Adicionar Usuário</Text>
+            <AddUserForm/>
         </Page>
     )
 }
