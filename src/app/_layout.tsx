@@ -30,5 +30,7 @@ export default function Layout() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:theme.colors.brown[950],
+        paddingBottom:10
     }
 })
