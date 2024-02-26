@@ -36,12 +36,12 @@ export default function TabLayout() {
                     tabBarIcon: ({size, color})=><Ionicons name="person-add" size={size} color={color}/>
                 }}/>
 
-            {/* <Tabs.Screen
+             <Tabs.Screen
              name="ongs"
               options={{
                     tabBarIcon: ({size, color})=><Ionicons name="business" size={size} color={color}/>
                 }}/>
-                
+              {/*  
             <Tabs.Screen
              name="pets"
               options={{
