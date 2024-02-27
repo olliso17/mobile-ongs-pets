@@ -1,29 +1,30 @@
-import { Button, Image, StyleSheet, Text, View } from "react-native";
+import { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { SelectList } from "react-native-dropdown-select-list";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Page from "../../components/page";
+import { Ong } from "../../interface/get_all_ongs_interface";
 import api from "../../service/api";
 import { theme } from "../../theme";
-import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import useAllOngs, { Ong } from "../../interface/get_all_ongs_interface";
-import { useEffect, useState } from "react";
-import { AxiosResponse } from "axios";
-import { Link } from "expo-router";
-import { fontScale } from "nativewind";
-import { type } from '../../../.expo/types/router.d';
+import { states } from "../../utils/states_brasil";
 
 export default function Ongs() {
 
-    const [ongs, setOngs] = useState<Ong[]>([])
+    const [ongs, setOngs] = useState<Ong[]>([]);
+    const [state, setState]= useState("");
+ 
     useEffect(() => {
         const getOngs = async () => {
             try {
                 const response: AxiosResponse<Ong[]> = await api.get('ongs/all');
-                setOngs(response.data)
+                setOngs(response.data);
             } catch (erro: any) {
                 console.error('Erro ao obter recurso:', erro.message);
                 throw erro;
             }
         }
-        getOngs()
+        getOngs();
     }, []);
 
     if (!ongs.length) {
@@ -39,7 +40,7 @@ export default function Ongs() {
         <Page>
             <View style={styles.view}>
                 <View style={styles.route}>
-                    <TextInput type='select'/>
+                    <SelectList setSelected={setState} data={states} placeholder={"Selecione o Estado"} defaultOption={{key:'', value:''}}/>
                     <TouchableOpacity style={styles.button}>
                         <Text style={styles.buttonText}>Bairro</Text>
                     </TouchableOpacity> 
