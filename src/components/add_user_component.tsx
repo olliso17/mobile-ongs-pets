@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Link } from 'expo-router';
 import { theme } from '../theme';
+import api from '../service/api';
 
 
 const validationSchema = yup.object().shape({
@@ -13,10 +14,11 @@ const validationSchema = yup.object().shape({
 });
 
 const AddUserForm: React.FC = () => {
-    const handleAddUser = (values: { name: string, email: string; password: string }) => {
+    const handleAddUser = useCallback((values: { name: string, email: string; password: string }) => {
+        api.post('user/create',values)
         // Lógica de autenticação aqui
         console.log('AddUser:', values);
-    };
+    },[]);
     return (
         <Formik
             initialValues={{ name: '', email: '', password: '' }}
@@ -61,7 +63,7 @@ const AddUserForm: React.FC = () => {
 
                     <Link href={{ pathname: '/', params: { name: 'Adicionar Ong' } }} asChild>
                         <TouchableOpacity style={styles.button} onPress={() => handleSubmit}>
-                            <Text style={styles.buttonText}>Entrar</Text>
+                            <Text style={styles.buttonText}>Cadastrar</Text>
                         </TouchableOpacity>
                     </Link>
 

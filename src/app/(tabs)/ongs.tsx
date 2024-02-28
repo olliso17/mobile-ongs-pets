@@ -1,84 +1,106 @@
 import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Page from "../../components/page";
 import { Ong } from "../../interface/get_all_ongs_interface";
-import api from "../../service/api";
+import api, { baseUrl } from "../../service/api";
 import { theme } from "../../theme";
 import { states } from "../../utils/states_brasil";
+import DropDownPicker from "react-native-dropdown-picker";
+import useSWR, { SWRConfig } from "swr";
+import getOngs from "../../service/api";
+import { useFetchSwr } from "../../hooks/useFetchSwr";
 
 export default function Ongs() {
 
-    const [ongs, setOngs] = useState<Ong[]>([]);
-    const [state, setState]= useState("");
- 
-    useEffect(() => {
-        const getOngs = async () => {
-            try {
-                const response: AxiosResponse<Ong[]> = await api.get('ongs/all');
-                setOngs(response.data);
-            } catch (erro: any) {
-                console.error('Erro ao obter recurso:', erro.message);
-                throw erro;
-            }
-        }
-        getOngs();
-    }, []);
+    const [currentValue, setCurrentValue] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
 
-    if (!ongs.length) {
-        // Se a lista ainda não foi carregada, você pode exibir um indicador de carregamento ou outra UI
+    const { data } = useFetchSwr<Ong[]>('ongs/all')
+
+    if (!data) {
+
         return (
-            <View>
-                <Text>Carregando...</Text>
+            <View style={{height:800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{
+                    fontSize: 20,
+                    fontFamily: theme.fontFamily.bold,
+                    color:theme.colors.brown['950']
+                }}>Carregando...</Text>
             </View>
         );
     }
-    console.log(ongs);
+    // console.log(currentValue)
     return (
+
         <Page>
             <View style={styles.view}>
                 <View style={styles.route}>
-                    <SelectList setSelected={setState} data={states} placeholder={"Selecione o Estado"} defaultOption={{key:'', value:''}}/>
-                    <TouchableOpacity style={styles.button}>
+                    <DropDownPicker
+                        items={states}
+                        open={isOpen}
+                        setOpen={() => setIsOpen(!isOpen)}
+                        value={currentValue}
+                        setValue={(val: any) => setCurrentValue(val)}
+                        maxHeight={200}
+                        autoScroll
+                        placeholder="Estado"
+                        placeholderStyle={{
+                            fontFamily: theme.fontFamily.bold,
+                            fontSize: 16
+                        }}
+                        multiple={true}
+                        min={1}
+                        max={1}
+                        mode="BADGE"
+                        badgeColors={[theme.colors.brown['950']]}
+                        badgeDotColors={[theme.colors.brown['50']]}
+                        badgeTextStyle={{ color: theme.colors.brown['50'] }}
+                        showTickIcon={true}
+                        containerStyle={{ width: 150 }}
+                    />
+
+                    {/* <TouchableOpacity style={styles.button}>
                         <Text style={styles.buttonText}>Bairro</Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
                         <Text style={styles.buttonText}>Cidade</Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
                         <Text style={styles.buttonText}>Estado</Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity> */}
                 </View>
 
+                <Suspense>
+                    <FlatList
+                        data={data}
+                        keyExtractor={(item: Ong) => item.id.toString()}
+                        renderItem={({ item }) => (
 
-                <FlatList
-                    data={ongs}
-                    keyExtractor={(item: Ong) => item.id.toString()}
-                    renderItem={({ item }) => (
+                            <TouchableOpacity style={styles.card}>
+                                <View style={styles.cardImage}>
+                                    {item.image != '' ? <Image source={{ uri: item.image }} style={styles.image} /> : <View />}
+                                </View>
+                                <View style={styles.cardText}>
 
-                        <TouchableOpacity style={styles.card}>
-                            <View style={styles.cardImage}>
-                                {item.image != '' ? <Image source={{ uri: item.image }} style={styles.image} /> : <View />}
-                            </View>
-                            <View style={styles.cardText}>
+                                    <Text style={styles.title}>{item.name} - Cnpj: {item.cnpj}</Text>
+                                    <Text style={styles.text}>{item.address}, {item.number_address}, Bairro {item.neighborhood}, {item.city}/{item.state}, cep: {item.cep}</Text>
+                                    <Text style={styles.text}>
+                                        {item.telephone !== '' ? 'Telefone para contato: ' + item.telephone : ''}
+                                        {item.email_ong !== '' ? 'Email para contato: ' + item.email_ong : ''}
+                                    </Text>
+                                </View>
 
-                                <Text style={styles.title}>{item.name} - Cnpj: {item.cnpj}</Text>
-                                <Text style={styles.text}>{item.address}, {item.number_address}, Bairro {item.neighborhood}, {item.city}/{item.state}, cep: {item.cep}</Text>
-                                <Text style={styles.text}>
-                                    {item.telephone !== '' ? 'Telefone para contato: ' + item.telephone : ''}
-                                    {item.email_ong !== '' ? 'Email para contato: ' + item.email_ong : ''}
-                                </Text>
-                            </View>
+                            </TouchableOpacity>
 
-                        </TouchableOpacity>
+                        )}
+                    />
+                </Suspense>
 
-                    )}
-                />
             </View>
-
-        </Page>
+        </Page >
 
     )
 }
@@ -86,7 +108,7 @@ export default function Ongs() {
 const styles = StyleSheet.create({
     route: {
         display: 'flex',
-        flexDirection:'row'
+        flexDirection: 'row'
     },
     view: {
         width: '95%',
@@ -108,7 +130,7 @@ const styles = StyleSheet.create({
     },
     button: {
         width: 70,
-        height:30,
+        height: 30,
         padding: '3%',
         backgroundColor: theme.colors.brown[950],
         borderRadius: 10,

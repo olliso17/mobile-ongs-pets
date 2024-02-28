@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Link } from 'expo-router';
 import { theme } from '../theme';
+import api from '../service/api';
 
 
 const validationSchema = yup.object().shape({
@@ -12,10 +13,11 @@ const validationSchema = yup.object().shape({
 });
 
 const LoginForm: React.FC = () => {
-    const handleLogin = (values: { email: string; password: string }) => {
+    const handleLogin = useCallback((values: { email: string; password: string }) => {
+        
         // Lógica de autenticação aqui
         console.log('Login:', values);
-    };
+    },[]);
 
     return (
 
