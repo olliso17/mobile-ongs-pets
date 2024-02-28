@@ -7,6 +7,10 @@ export function useFetchSwr<Data = any, Error = any>(url: string) {
         const data = await response.data;
 
         return data
+    },{
+        refreshInterval: 6000, 
+        errorRetryInterval:5000,
+        revalidateOnReconnect:true
     })
 
     return { data, error, mutate}

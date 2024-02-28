@@ -9,16 +9,17 @@ import api, { baseUrl } from "../../service/api";
 import { theme } from "../../theme";
 import { states } from "../../utils/states_brasil";
 import DropDownPicker from "react-native-dropdown-picker";
-import useSWR, { SWRConfig } from "swr";
+import {mutate as mutateGlobal}from "swr";
 import getOngs from "../../service/api";
 import { useFetchSwr } from "../../hooks/useFetchSwr";
+
 
 export default function Ongs() {
 
     const [currentValue, setCurrentValue] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
-    const { data } = useFetchSwr<Ong[]>('ongs/all')
+    const { data, mutate } = useFetchSwr<Ong[]>('ongs/all')
 
     if (!data) {
 
@@ -32,6 +33,7 @@ export default function Ongs() {
             </View>
         );
     }
+    mutateGlobal('ongs/all',data)
     // console.log(currentValue)
     return (
 
